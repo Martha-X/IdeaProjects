@@ -4,9 +4,6 @@ public class GitTest {
     public static void main(String[] args) {
         System.out.println("Hello Git");
         System.out.println("Hello Git");
-        System.out.println("hot-fix changes");
-        System.out.println("hot-fix another changes");
-        System.out.println("Hello Git");
-        System.out.println("Master changes");
+        System.out.println("IDEA implements push to GitHub");
     }
 }
