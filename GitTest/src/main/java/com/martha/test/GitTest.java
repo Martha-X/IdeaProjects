@@ -5,5 +5,6 @@ public class GitTest {
         System.out.println("Hello Git");
         System.out.println("Hello Git");
         System.out.println("IDEA implements push to GitHub");
+        System.out.println("GitHub to IDEA");
     }
 }
