@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electronic.mapper.UserFollowMapper">
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        SELECT id, user_id, house_id, create_time, update_time, is_deleted
+        FROM user_follow
+    </sql>
+
+
+    <select id="getByPhone" resultType="userInfo">
+        <include refid="columns"/>
+        WHERE phone = #{phone} AND is_deleted = 0
+    </select>
+    <select id="isFollowed" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_follow
+        WHERE user_id = #{id}
+          AND house_id = #{houseId}
+          AND is_deleted = 0
+    </select>
+    <select id="findListPage" resultType="com.electronic.vo.UserFollowVo">
+        select
+        flw.id,
+        flw.house_id as houseId,
+        flw.create_time as createTime,
+
+        hse.name,
+        hse.build_area as buildArea,
+        hse.total_price as totalPrice,
+        hse.house_type_id as houseTypeId,
+        hse.floor_id as floorId,
+        hse.direction_id as directionId,
+        hse.default_image_url as defaultImageUrl,
+
+        cmty.name as communityName
+        from user_follow flw
+        left join hse_house hse on hse.id = flw.house_id
+        left join hse_community cmty on cmty.id = hse.community_id
+        <where>
+            user_id = #{userId}
+            and flw.is_deleted = 0
+            and hse.is_deleted = 0
+            and cmty.is_deleted = 0
+        </where>
+        order by flw.id desc
+    </select>
+
+    <insert id="insert">
+        INSERT INTO user_follow(user_id, house_id)
+        VALUES (#{userId}, #{houseId})
+    </insert>
+
+    <update id="delete">
+        UPDATE user_follow
+        SET is_deleted = 1
+        WHERE id = #{id}
+    </update>
+
+</mapper>

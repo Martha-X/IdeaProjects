@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electronic.mapper.AdminMapper">
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="select_all_columns_from_acl_admin">
+        SELECT
+            id,
+            username,
+            password,
+            name,
+            phone,
+            head_url,
+            description,
+            create_time,
+            update_time,
+            is_deleted
+        FROM
+            acl_admin
+    </sql>
+
+    <!--查询所有角色记录-->
+    <select id="getAll" resultType="com.electronic.entity.Admin">
+        <include refid="select_all_columns_from_acl_admin"/>
+        WHERE is_deleted = 0
+    </select>
+
+    <!--根据id查询角色-->
+    <select id="getById" resultType="com.electronic.entity.Admin">
+        <include refid="select_all_columns_from_acl_admin"/>
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectAllAsPage" resultType="com.electronic.entity.Admin">
+        <include refid="select_all_columns_from_acl_admin"/>
+        <where>
+            is_deleted = 0
+            <if test="username != null and username != ''">
+                AND username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone LIKE CONCAT('%',#{phone},'%')
+            </if>
+            <if test="createTimeBegin != null and createTimeBegin != ''">
+                AND create_time BETWEEN #{createTimeBegin}
+            </if>
+            <if test="createTimeEnd != null and createTimeEnd != ''">
+                AND #{createTimeEnd}
+            </if>
+        </where>
+    </select>
+    <select id="getAdminByUserName" resultType="com.electronic.entity.Admin">
+        SELECT
+            id,
+            username,
+            password,
+            name,
+            phone,
+            head_url,
+            description,
+            create_time,
+            update_time,
+            is_deleted
+        FROM
+            acl_admin
+        WHERE
+              username = #{username}
+          AND is_deleted = 0
+    </select>
+
+    <!--创建角色-->
+    <insert id="insert" parameterType="com.electronic.entity.Admin">
+        INSERT INTO
+            acl_admin(name, username, phone, password)
+        VALUES
+            (#{name}, #{username}, #{phone}, #{password})
+    </insert>
+
+    <!--逻辑删除角色-->
+    <update id="delete" parameterType="java.lang.Long">
+        UPDATE acl_admin
+        SET
+            is_deleted = 1,
+            update_time = NOW()
+        WHERE
+            id = #{id}
+    </update>
+
+    <!--修改角色-->
+    <update id="update">
+        UPDATE acl_admin
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="headUrl != null">
+                head_url = #{headUrl},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>

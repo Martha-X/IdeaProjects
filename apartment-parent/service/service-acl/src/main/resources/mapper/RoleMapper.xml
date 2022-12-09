@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electronic.mapper.RoleMapper">
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        select id, role_name, role_code, description, create_time, update_time, is_deleted
+    </sql>
+
+    <!--查询所有角色记录-->
+    <select id="selectAll" resultType="com.electronic.entity.Role">
+        <include refid="columns"/>
+        FROM acl_role
+        WHERE is_deleted = 0
+    </select>
+
+    <!--根据id查询角色-->
+    <select id="getById" resultType="com.electronic.entity.Role">
+        <include refid="columns"/>
+        FROM acl_role
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectAllAsPage" resultType="com.electronic.entity.Role">
+        <include refid="columns"/>
+        FROM acl_role
+        <where>
+            is_deleted = 0
+            <if test="roleName != null and roleName != ''">
+                AND role_name LIKE CONCAT('%',#{roleName},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--创建角色-->
+    <insert id="insert" parameterType="com.electronic.entity.Role">
+        INSERT INTO acl_role(role_name, role_code, description)
+        VALUES (#{roleName}, #{roleCode}, #{description})
+    </insert>
+
+    <!--逻辑删除角色-->
+    <update id="delete" parameterType="java.lang.Long">
+        UPDATE acl_role
+        SET is_deleted  = 1,
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!--修改角色-->
+    <update id="update">
+        UPDATE acl_role
+        <set>
+            <if test="roleName != null">
+                role_name = #{roleName},
+            </if>
+            <if test="roleCode != null">
+                role_code = #{roleCode},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>

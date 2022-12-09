@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electronic.mapper.HouseImageMapper">
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        SELECT id,
+               house_id,
+               image_name,
+               image_url,
+               type,
+               create_time,
+               update_time,
+               is_deleted
+        FROM hse_house_image
+    </sql>
+
+
+    <select id="getHouseImagesByHouseIdAndType" resultType="com.electronic.entity.HouseImage">
+        <include refid="columns"/>
+        WHERE house_id = #{houseId} AND type = #{type} AND is_deleted = 0
+    </select>
+
+    <insert id="insert">
+        INSERT INTO hse_house_image(house_id, image_name, image_url, type)
+        VALUES (#{houseId}, #{imageName}, #{imageUrl}, #{type})
+    </insert>
+
+    <update id="delete">
+        UPDATE hse_house_image
+        SET is_deleted = 1
+        WHERE id = #{id}
+    </update>
+
+</mapper>

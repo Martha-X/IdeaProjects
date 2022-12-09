@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electronic.mapper.CommunityMapper">
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        SELECT id,
+               name,
+               description,
+               province_id,
+               city_id,
+               area_id,
+               plate_id,
+               address,
+               longitude,
+               latitude,
+               build_years,
+               property_price,
+               property_company,
+               developer,
+               build_num,
+               house_num,
+               average_price,
+               create_time,
+               update_time,
+               is_deleted
+    </sql>
+
+    <select id="selectAllAsPage" resultType="com.electronic.entity.Community">
+        <include refid="columns"/>
+        FROM hse_community
+        <where>
+            <if test="name != null and name != ''">
+                name like CONCAT('%',name,'%') AND
+            </if>
+            <if test="areaId != null and areaId != ''">
+                area_id = #{areaId} AND
+            </if>
+            <if test="plateId != null and plateId != ''">
+                plate_id = #{plateId} AND
+            </if>
+            is_deleted = 0
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.electronic.entity.Community">
+        INSERT INTO hse_community(name,
+                                  description,
+                                  area_id,
+                                  plate_id,
+                                  address,
+                                  build_years,
+                                  property_price,
+                                  property_company,
+                                  developer,
+                                  build_num,
+                                  house_num,
+                                  average_price)
+        VALUES (#{name},
+                #{description},
+                #{areaId},
+                #{plateId},
+                #{address},
+                #{buildYears},
+                #{propertyPrice},
+                #{propertyCompany},
+                #{developer},
+                #{buildNum},
+                #{houseNum},
+                #{averagePrice})
+    </insert>
+
+    <select id="getById" resultType="community">
+        <include refid="columns"/>
+        FROM hse_community
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+<!--    <select id="getAllCommunities" resultType="com.electronic.entity.Community">-->
+
+<!--    </select>-->
+
+    <update id="update" parameterType="community">
+        UPDATE hse_community
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="provinceId != null and provinceId != ''">
+                province_id = #{provinceId},
+            </if>
+            <if test="cityId != null and cityId != ''">
+                city_id = #{cityId},
+            </if>
+            <if test="areaId != null and areaId != ''">
+                area_id = #{areaId},
+            </if>
+            <if test="plateId != null and plateId != ''">
+                plate_id = #{plateId},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="longitude != null and longitude != ''">
+                longitude = #{longitude},
+            </if>
+            <if test="latitude != null and latitude != ''">
+                latitude = #{latitude},
+            </if>
+            <if test="buildYears != null and buildYears != ''">
+                build_years = #{buildYears},
+            </if>
+            <if test="propertyPrice != null and propertyPrice != ''">
+                property_price = #{propertyPrice},
+            </if>
+            <if test="propertyCompany != null and propertyCompany != ''">
+                property_company = #{propertyCompany},
+            </if>
+            <if test="developer != null and developer != ''">
+                developer = #{developer},
+            </if>
+            <if test="buildNum != null and buildNum != ''">
+                build_num = #{buildNum},
+            </if>
+            <if test="houseNum != null and houseNum != ''">
+                house_num = #{houseNum},
+            </if>
+            <if test="averagePrice != null and averagePrice != ''">
+                average_price = #{averagePrice}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+        UPDATE hse_community
+        SET is_deleted = 1
+        WHERE id = #{id}
+    </update>
+</mapper>

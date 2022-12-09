@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electronic.mapper.HouseUserMapper">
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        SELECT id,
+               house_id,
+               name,
+               phone,
+               sex,
+               id_no,
+               create_time,
+               update_time,
+               is_deleted
+        FROM hse_house_user
+    </sql>
+
+
+    <select id="getHouseUserByHouseId" resultType="com.electronic.entity.HouseUser">
+        <include refid="columns"/>
+        WHERE house_id = #{houseId} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" parameterType="houseUser">
+        INSERT INTO hse_house_user(house_id, name, phone, sex, id_no)
+        VALUES (#{houseId}, #{name}, #{phone}, #{sex}, #{idNo})
+    </insert>
+
+    <select id="getById" resultType="houseUser">
+        <include refid="columns"/>
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <update id="update">
+        UPDATE hse_house_user
+        <set>
+            <if test="name!=null and name != ''">
+                name = #{name},
+            </if>
+            <if test="phone!=null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="sex!=null">
+                sex = #{sex},
+            </if>
+            <if test="idNo!=null and idNo!= ''">
+                id_no = #{idNo}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="delete">
+        UPDATE hse_house_user
+        SET is_deleted = 1
+        WHERE id = #{id}
+    </update>
+</mapper>
